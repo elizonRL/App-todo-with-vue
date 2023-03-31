@@ -1,8 +1,5 @@
 <template>
-  <nav class="navbar">
-    <img src="./assets/logo.svg" alt="logo vue" width="50" />
-    <div class="brand">Todo list app</div>
-  </nav>
+  <Navbar/>
   <main class="container">
     <Alert
       message="Todo Title is required"
@@ -11,31 +8,29 @@
       type="danger"
     />
     <section>
-      <form class="add-todo-form">
-        <input v-model="todoTitle" type="text" placeholder="Todo Title" />
-        <div>
-          <button @click.prevent="addTodo">Add Todo</button>
-        </div>
-      </form>
+      <addTodoForm @submit="addTodo"/>
     </section>
     <section>
-      <div class="todo" v-for="todo in todos" :key="todo.id">
-        <p>{{ todo.title }}</p>
-        <div>
-          <button @click="remuveTodo(todo)" class="remuve-todo-btn">
-            &times;
-          </button>
-        </div>
-      </div>
+      <Todo v-for="todo in todos"
+      :key="todo.id"
+      :title="todo.title"
+      @remove="removeTodo(todo.id)"
+      />
     </section>
   </main>
 </template>
 <script>
 import Alert from "./components/alert.vue";
+import Navbar from "./components/NavBar.vue";
+import AddTodoForm from "./components/AddTodoForm.vue";
+import Todo from "./components/Todo.vue"
 
 export default {
-  components: {
+  components: { 
     Alert,
+    Navbar,
+    AddTodoForm,
+    Todo
   },
   data() {
     return {
@@ -45,65 +40,26 @@ export default {
     };
   },
   methods: {
-    addTodo() {
-      if (this.todoTitle === "") {
+    addTodo(title) {
+      if (title === "") {
         this.showAlert = true;
         return;
       }
       this.todos.push({
-        title: this.todoTitle,
+        title,
         id: Math.floor(Math.random() * 1000),
       });
+
     },
-    remuveTodo(todoTitle) {
-      this.todos = this.todos.filter((todo) => todo !== todoTitle);
+    removeTodo(id) {
+      this.todos = this.todos.filter((todo) => todo.id !== id);
     },
+   
   },
-  components: { Alert },
+  
 };
 </script>
 
 <style scoped>
-.navbar {
-  display: flex;
-  background-color: var(--navbar-color);
-  padding: 20px;
-  margin-bottom: 30px;
-}
-.brand {
-  font-size: 2rem;
-}
-.add-todo-form {
-  display: flex;
-  justify-content: space-between;
-}
-.add-todo-form input {
-  width: 80%;
-  border: solid 2px var(--accent-color);
-}
-.add-todo-form button {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: none;
-  height: 50px;
-}
-.todo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--accent-color);
-  margin-top: 30px;
-  padding: 0 20px 0 20px;
-  border-radius: 10px;
-}
-.remuve-todo-btn {
-  border-radius: 50%;
-  border: none;
-  height: 40px;
-  width: 40px;
-  font-size: 30px;
-  color: var(--text-color);
-  background-color: var(--danger-color);
-  cursor: pointer;
-}
+
 </style>

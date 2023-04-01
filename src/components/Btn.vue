@@ -1,6 +1,6 @@
 <template>
   <button :style="{ backgroundColor }" @click.prevent="$emit('click')" :class="{circle: applayCircleClass}">
-    <slot></slot>
+    <slot />
   </button>
 </template>
 <script>

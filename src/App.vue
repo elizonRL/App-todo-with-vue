@@ -48,8 +48,9 @@ export default {
       }
       this.todos.push({
         title,
-        id: Math.floor(Math.random() * 1000),
+        id: Math.floor(Math.random() *1000)
       });
+      console.log(this.todos);
     },
     removeTodo(id) {
       this.todos = this.todos.filter((todo) => todo.id !== id);

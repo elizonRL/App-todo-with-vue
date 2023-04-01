@@ -8,13 +8,14 @@
       type="danger"
     />
     <section>
-      <addTodoForm @submit="addTodo"/>
+      <AddTodoForm @submit="addTodo"/>
     </section>
     <section>
-      <Todo v-for="todo in todos"
-      :key="todo.id"
-      :title="todo.title"
-      @remove="removeTodo(todo.id)"
+      <Todo
+        v-for="todo in todos"
+        :key="todo.id"
+        :title="todo.title"
+        @remove="removeTodo(todo.id)"
       />
     </section>
   </main>
@@ -23,7 +24,7 @@
 import Alert from "./components/alert.vue";
 import Navbar from "./components/NavBar.vue";
 import AddTodoForm from "./components/AddTodoForm.vue";
-import Todo from "./components/Todo.vue"
+import Todo from "./components/Todo.vue";
 
 export default {
   components: { 
@@ -49,14 +50,11 @@ export default {
         title,
         id: Math.floor(Math.random() * 1000),
       });
-
     },
     removeTodo(id) {
       this.todos = this.todos.filter((todo) => todo.id !== id);
     },
-   
   },
-  
 };
 </script>
 

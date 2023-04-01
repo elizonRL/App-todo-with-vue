@@ -1,5 +1,5 @@
 <template>
-  <button :style="{ backgroundColor }" @click.prevent="$emit('click')" class="{circle: applayCircleClass}">
+  <button :style="{ backgroundColor }" @click.prevent="$emit('click')" :class="{circle: applayCircleClass}">
     <slot></slot>
   </button>
 </template>
@@ -11,6 +11,10 @@ export default {
       validator(value) {
         return ["danger", "warning", "info", "success"].includes(value);
       },
+    },
+    circle: {
+      default: false,
+      type: Boolean,
     },
   },
   computed: {

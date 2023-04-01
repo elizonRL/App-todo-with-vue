@@ -2,7 +2,10 @@
   <div class="todo">
     <p>{{ title }}</p>
     <div>
-      <Btn circle type="danger" @click="$emit('remove')" class="remuve-todo-btn"
+      <Btn circle type="secondary" @click="$emit('remove')" class="btn edit-todo-btn"
+        ><Pencil/>
+      </Btn>
+      <Btn circle type="danger" @click="$emit('remove')" class="btn"
         >&times;
       </Btn>
     </div>
@@ -10,10 +13,12 @@
 </template>
 <script>
 import Btn from "./Btn.vue";
+import Pencil from "./icons/pencil.vue";
 export default {
   components: {
     Btn,
-  },
+    Pencil
+},
   props: {
     title: {
       required: true,
@@ -33,7 +38,13 @@ export default {
   padding: 0 20px 0 20px;
   border-radius: 10px;
 }
-.remuve-todo-btn {
+.todo > div{
+  display: flex;
+}
+.edit-todo-btn{
+  margin-right: 5px;
+}
+.btn {
   border: none;
   height: 40px;
   width: 40px;

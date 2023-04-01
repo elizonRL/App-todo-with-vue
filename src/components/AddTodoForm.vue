@@ -30,7 +30,7 @@ export default {
   width: 80%;
   border: solid 2px var(--accent-color);
 }
- .btn {
+.btn {
   height: 50px;
-} 
+}
 </style>

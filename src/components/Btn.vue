@@ -1,15 +1,22 @@
 <template>
-  <button :style="{ backgroundColor }" @click.prevent="$emit('click')" :class="{circle: applayCircleClass}">
+  <button
+    :style="{ backgroundColor }"
+    @click.prevent="$emit('click')"
+    :class="{ circle: applyCircleClass }"
+  >
     <slot />
   </button>
 </template>
+
 <script>
 export default {
   props: {
     type: {
+      required: false,
       default: "success",
       validator(value) {
-        return ["danger", "warning", "info", "success"].includes(value);
+        const options = ["danger", "warning", "info", "success", "secondary"];
+        return options.includes(value);
       },
     },
     circle: {
@@ -24,14 +31,15 @@ export default {
         info: "var(--info-color)",
         warning: "var(--warning-color)",
         success: "var(--accent-color)",
+        secondary: "var(--secondary-color)",
       };
       return options[this.type];
     },
-    applayCircleClass() {
+    applyCircleClass() {
       return this.circle;
     },
   },
-  emit: ["click"],
+  emits: ["click"],
 };
 </script>
 
@@ -40,6 +48,9 @@ button {
   color: var(--text-color);
   border: none;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .circle {
   border-radius: 50%;

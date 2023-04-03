@@ -2,7 +2,7 @@
   <div class="todo">
     <p>{{ title }}</p>
     <div>
-      <Btn circle type="secondary" @click="$emit('remove')" class="btn edit-todo-btn"
+      <Btn circle type="secondary" @click="$emit('edit')" class="btn edit-todo-btn"
         ><Pencil/>
       </Btn>
       <Btn circle type="danger" @click="$emit('remove')" class="btn"
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import Btn from "./Btn.vue";
+import Btn from "./btn.vue";
 import Pencil from "./icons/pencil.vue";
 export default {
   components: {
@@ -25,7 +25,7 @@ export default {
       type: String,
     },
   },
-  emits: ["remove"],
+  emits: ["remove", "edit"],
 };
 </script>
 <style scoped>

@@ -1,20 +1,21 @@
 <template>
-  <Navbar/>
+  <Navbar />
   <main class="container">
-    <Modal :show="showEditTodoModal">
+    <Modal :show="editTodoForm.show">
       <template #header>
         <h2>Edit Todo</h2>
       </template>
       <template #conten>
-        <form>
-
+        <form class="edit-todo-form">
           <div><label>Todo Title</label></div>
-          <input type="text">
+          <input type="text"  v-model="editTodoForm.todo.title"/>
         </form>
       </template>
       <template #footer>
-        <Btn>submit</Btn>
-        <Btn type="danger" @click="showEditTodoModal=flase">close</Btn>
+        <div class="edit-todo-modal-footer">
+          <Btn class="edit-btn" @click="updateTodo">submit</Btn>
+          <Btn class="edit-btn" type="danger" @click="editTodoForm.show = flase">close</Btn>
+        </div>
       </template>
     </Modal>
 
@@ -25,7 +26,7 @@
       type="danger"
     />
     <section>
-      <AddTodoForm @submit="addTodo"/>
+      <AddTodoForm @submit="addTodo" />
     </section>
     <section>
       <Todo
@@ -33,7 +34,7 @@
         :key="todo.id"
         :title="todo.title"
         @remove="removeTodo(todo.id)"
-        @edit="showEditTodoModal=true"
+        @edit="showEditTodo(todo)"
       />
     </section>
   </main>
@@ -53,14 +54,20 @@ export default {
     AddTodoForm,
     Todo,
     Modal,
-    Btn
-},
+    Btn,
+  },
   data() {
     return {
       todoTitle: "",
       todos: [],
       showAlert: false,
-      showEditTodoModal: false,
+      editTodoForm:{
+        show: false,
+        todo: {
+          id: 0,
+          title: ""
+        },
+      },
     };
   },
   methods: {
@@ -71,9 +78,18 @@ export default {
       }
       this.todos.push({
         title,
-        id: Math.floor(Math.random() *1000)
+        id: Math.floor(Math.random() * 1000),
       });
       console.log(this.todos);
+    },
+    showEditTodo(todo){
+      this.editTodoForm.show = true;
+      this.editTodoForm.todo = {...todo}; 
+    },
+    updateTodo(){
+      const todo = this.todos.find((todo)=> todo.id === this.editTodoForm.todo.id);
+      todo.title = this.editTodoForm.todo.title;
+      this.editTodoForm.show = false;
     },
     removeTodo(id) {
       this.todos = this.todos.filter((todo) => todo.id !== id);
@@ -83,5 +99,18 @@ export default {
 </script>
 
 <style scoped>
+.edit-todo-form > input {
+  width: 100%;
+  height: 30px;
+  border: solid 1px var(--accent-color);
+}
+.edit-todo-modal-footer{
+  display: flex;
+  justify-content: end;
 
+}
+.edit-btn{
+  margin-right: 5px; 
+  padding: 20px;
+}
 </style>

@@ -82,12 +82,12 @@ export default {
 }
 
 .modal-body {
-  padding: 2px 16px;
+  padding: 16px;
   background-color: var(--backgroung-color);
 }
 
 .modal-footer {
-  padding: 2px 16px;
+  padding: 16px;
   background-color: rgb(83, 83, 93);
   color: white;
 }

@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import Btn from "./btn.vue";
+import Btn from "./Btn.vue";
 import Pencil from "./icons/pencil.vue";
 export default {
   components: {

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="modal">
+  <div ref="modal" v-show="show" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
       <div class="modal-header">
@@ -14,12 +14,36 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   props: {
     show: {
       default: false,
     },
+  },
+  data() {
+    return {
+      clickListener: (e) => {
+        if (e.target === this.$refs.modal) {
+          this.$emit("close");
+        }
+      },
+      keydown: (e) => {
+        if (e.key === "Escape") {
+          this.$emit("close");
+        }
+      },
+    };
+  },
+  emits: ["close"],
+  mounted() {
+    window.addEventListener("click", this.clickListener);
+    window.addEventListener("keydown", this.keydown);
+  },
+  beforeUnmount() {
+    window.removeEventListener("click", this.clickListener);
+    window.removeEventListener("keydown", this.keydown);
   },
 };
 </script>

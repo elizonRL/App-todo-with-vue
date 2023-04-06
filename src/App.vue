@@ -1,7 +1,7 @@
 <template>
   <Navbar />
   <main class="container">
-    <Modal :show="editTodoForm.show">
+    <Modal :show="editTodoForm.show" @close="editTodoForm.show = flase">
       <template #header>
         <h2>Edit Todo</h2>
       </template>
@@ -45,7 +45,7 @@ import Navbar from "./components/NavBar.vue";
 import AddTodoForm from "./components/AddTodoForm.vue";
 import Todo from "./components/Todo.vue";
 import Modal from "./components/Modal.vue";
-import Btn from "./components/btn.vue";
+import Btn from "./components/Btn.vue";
 
 export default {
   components: {

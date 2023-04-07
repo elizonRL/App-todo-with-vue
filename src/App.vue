@@ -28,16 +28,19 @@
       :type="alert.type"
     />
     <section>
-      <AddTodoForm @submit="addTodo" />
+      <AddTodoForm :isLoanding="isPostingTodo" @submit="addTodo" />
     </section>
     <section>
-      <Todo
-        v-for="todo in todos"
-        :key="todo.id"
-        :title="todo.title"
-        @remove="removeTodo(todo.id)"
-        @edit="showEditTodo(todo)"
-      />
+      <Spinner v-if="isLoading" class="spinner" />
+      <div v-else>
+        <Todo
+          v-for="todo in todos"
+          :key="todo.id"
+          :title="todo.title"
+          @remove="removeTodo(todo.id)"
+          @edit="showEditTodo(todo)"
+        />
+      </div>
     </section>
   </main>
 </template>
@@ -49,6 +52,7 @@ import Todo from "./components/Todo.vue";
 import Modal from "./components/Modal.vue";
 import Btn from "./components/Btn.vue";
 import axios from "axios";
+import Spinner from "./components/Spinner.vue";
 export default {
   components: {
     Alert,
@@ -57,6 +61,7 @@ export default {
     Todo,
     Modal,
     Btn,
+    Spinner,
   },
   data() {
     return {
@@ -67,6 +72,8 @@ export default {
         message: "",
         type: "danger",
       },
+      isLoading: false,
+      isPostingTodo: false,
       editTodoForm: {
         show: false,
         todo: {
@@ -81,12 +88,14 @@ export default {
   },
   methods: {
     async fetchTodos() {
+      this.isLoading = true;
       try {
         const res = await axios.get("http://localhost:8080/todos");
         this.todos = res.data;
       } catch (e) {
         this.showAlert("Fail Connetion to Data server");
       }
+      this.isLoading = false;
     },
     showAlert(message, type = "danger") {
       this.alert.show = true;
@@ -98,25 +107,35 @@ export default {
         this.showAlert("Todo Title is required");
         return;
       }
+      
       try {
+        this.isPostingTodo = true;
         const res = await axios.post("http://localhost:8080/todos", {
           title,
         });
+        this.isPostingTodo = false;
         this.todos.push(res.data);
         this.showAlert("The task was successfully added", "success");
       } catch (e) {
         this.showAlert("Todos is not add");
       }
+      
     },
     showEditTodo(todo) {
       this.editTodoForm.show = true;
       this.editTodoForm.todo = { ...todo };
     },
-    updateTodo() {
+    async updateTodo() {
       const todo = this.todos.find(
         (todo) => todo.id === this.editTodoForm.todo.id
       );
       todo.title = this.editTodoForm.todo.title;
+      await axios.put(
+        `http://localhost:8080/todos/${this.editTodoForm.todo.id}`,
+        {
+          title: this.editTodoForm.todo.title,
+        }
+      );
       this.editTodoForm.show = false;
     },
     async removeTodo(id) {
@@ -140,5 +159,9 @@ export default {
 .edit-btn {
   margin-right: 5px;
   padding: 20px;
+}
+.spinner{
+  margin: auto;
+  margin-top: 30px;
 }
 </style>

@@ -103,6 +103,7 @@ export default {
           title,
         });
         this.todos.push(res.data);
+        this.showAlert("The task was successfully added", "success");
       } catch (e) {
         this.showAlert("Todos is not add");
       }

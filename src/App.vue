@@ -8,22 +8,24 @@
       <template #conten>
         <form class="edit-todo-form">
           <div><label>Todo Title</label></div>
-          <input type="text"  v-model="editTodoForm.todo.title"/>
+          <input type="text" v-model="editTodoForm.todo.title" />
         </form>
       </template>
       <template #footer>
         <div class="edit-todo-modal-footer">
           <Btn class="edit-btn" @click="updateTodo">submit</Btn>
-          <Btn class="edit-btn" type="danger" @click="editTodoForm.show = flase">close</Btn>
+          <Btn class="edit-btn" type="danger" @click="editTodoForm.show = flase"
+            >close</Btn
+          >
         </div>
       </template>
     </Modal>
 
     <Alert
-      message="Todo Title is required"
-      :show="showAlert"
-      @close="showAlert = flase"
-      type="danger"
+      :message="alert.message"
+      :show="alert.show"
+      @close="alert.show = flase"
+      :type="alert.type"
     />
     <section>
       <AddTodoForm @submit="addTodo" />
@@ -46,7 +48,7 @@ import AddTodoForm from "./components/AddTodoForm.vue";
 import Todo from "./components/Todo.vue";
 import Modal from "./components/Modal.vue";
 import Btn from "./components/Btn.vue";
-
+import axios from "axios";
 export default {
   components: {
     Alert,
@@ -60,38 +62,64 @@ export default {
     return {
       todoTitle: "",
       todos: [],
-      showAlert: false,
-      editTodoForm:{
+      alert: {
+        show: false,
+        message: "",
+        type: "danger",
+      },
+      editTodoForm: {
         show: false,
         todo: {
           id: 0,
-          title: ""
+          title: "",
         },
       },
     };
   },
+  created() {
+    this.fetchTodos();
+  },
   methods: {
-    addTodo(title) {
+    async fetchTodos() {
+      try {
+        const res = await axios.get("http://localhost:8080/todos");
+        this.todos = res.data;
+      } catch (e) {
+        this.showAlert("Fail Connetion to Data server");
+      }
+    },
+    showAlert(message, type = "danger") {
+      this.alert.show = true;
+      this.alert.message = message;
+      this.alert.type = type;
+    },
+    async addTodo(title) {
       if (title === "") {
-        this.showAlert = true;
+        this.showAlert("Todo Title is required");
         return;
       }
-      this.todos.push({
-        title,
-        id: Math.floor(Math.random() * 1000),
-      });
-      console.log(this.todos);
+      try {
+        const res = await axios.post("http://localhost:8080/todos", {
+          title,
+        });
+        this.todos.push(res.data);
+      } catch (e) {
+        this.showAlert("Todos is not add");
+      }
     },
-    showEditTodo(todo){
+    showEditTodo(todo) {
       this.editTodoForm.show = true;
-      this.editTodoForm.todo = {...todo}; 
+      this.editTodoForm.todo = { ...todo };
     },
-    updateTodo(){
-      const todo = this.todos.find((todo)=> todo.id === this.editTodoForm.todo.id);
+    updateTodo() {
+      const todo = this.todos.find(
+        (todo) => todo.id === this.editTodoForm.todo.id
+      );
       todo.title = this.editTodoForm.todo.title;
       this.editTodoForm.show = false;
     },
-    removeTodo(id) {
+    async removeTodo(id) {
+      await axios.delete(`http://localhost:8080/todos/${id}`);
       this.todos = this.todos.filter((todo) => todo.id !== id);
     },
   },
@@ -104,13 +132,12 @@ export default {
   height: 30px;
   border: solid 1px var(--accent-color);
 }
-.edit-todo-modal-footer{
+.edit-todo-modal-footer {
   display: flex;
   justify-content: end;
-
 }
-.edit-btn{
-  margin-right: 5px; 
+.edit-btn {
+  margin-right: 5px;
   padding: 20px;
 }
 </style>

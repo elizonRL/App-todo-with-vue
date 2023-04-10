@@ -90,7 +90,7 @@ export default {
     async fetchTodos() {
       this.isLoading = true;
       try {
-        const res = await axios.get("http://localhost:8080/todos");
+        const res = await axios.get("/api/todos");
         this.todos = res.data;
       } catch (e) {
         this.showAlert("Fail Connetion to Data server");
@@ -107,10 +107,10 @@ export default {
         this.showAlert("Todo Title is required");
         return;
       }
-      
+
       try {
         this.isPostingTodo = true;
-        const res = await axios.post("http://localhost:8080/todos", {
+        const res = await axios.post("/api/todos", {
           title,
         });
         this.isPostingTodo = false;
@@ -119,7 +119,6 @@ export default {
       } catch (e) {
         this.showAlert("Todos is not add");
       }
-      
     },
     showEditTodo(todo) {
       this.editTodoForm.show = true;
@@ -131,7 +130,7 @@ export default {
       );
       todo.title = this.editTodoForm.todo.title;
       await axios.put(
-        `http://localhost:8080/todos/${this.editTodoForm.todo.id}`,
+        `/api/todos/${this.editTodoForm.todo.id}`,
         {
           title: this.editTodoForm.todo.title,
         }
@@ -139,7 +138,7 @@ export default {
       this.editTodoForm.show = false;
     },
     async removeTodo(id) {
-      await axios.delete(`http://localhost:8080/todos/${id}`);
+      await axios.delete(`/api/todos/${id}`);
       this.todos = this.todos.filter((todo) => todo.id !== id);
     },
   },
@@ -160,7 +159,7 @@ export default {
   margin-right: 5px;
   padding: 20px;
 }
-.spinner{
+.spinner {
   margin: auto;
   margin-top: 30px;
 }

@@ -53,6 +53,7 @@ import Modal from "./components/Modal.vue";
 import Btn from "./components/Btn.vue";
 import axios from "axios";
 import Spinner from "./components/Spinner.vue";
+import { reactive, ref } from "vue";
 export default {
   components: {
     Alert,
@@ -63,86 +64,99 @@ export default {
     Btn,
     Spinner,
   },
-  data() {
-    return {
-      todoTitle: "",
-      todos: [],
-      alert: {
+  setup(){
+    const todoTitle = ref("");
+    const todos = ref([]);
+    const alert = reactive({
         show: false,
         message: "",
         type: "danger",
-      },
-      isLoading: false,
-      isPostingTodo: false,
-      editTodoForm: {
+      },);
+    const isLoading = ref(false);
+    const isPostingTodo = ref(false);
+    const editTodoForm = reactive({
         show: false,
         todo: {
           id: 0,
           title: "",
         },
-      },
-    };
-  },
-  created() {
-    this.fetchTodos();
-  },
-  methods: {
-    async fetchTodos() {
-      this.isLoading = true;
+      },);
+
+      function showEditTodo(todo) {
+      editTodoForm.show = true;
+      editTodoForm.todo = { ...todo };
+    }
+    function showAlert(message, type = "danger") {
+      alert.show = true;
+      alert.message = message;
+      alert.type = type;
+    }
+
+      async function fetchTodos() {
+      isLoading.value = true;
       try {
         const res = await axios.get("/api/todos");
-        this.todos = res.data;
+        todos.value = res.data;
       } catch (e) {
-        this.showAlert("Fail Connetion to Data server");
+        showAlert("Fail Connetion to Data server");
       }
-      this.isLoading = false;
-    },
-    showAlert(message, type = "danger") {
-      this.alert.show = true;
-      this.alert.message = message;
-      this.alert.type = type;
-    },
-    async addTodo(title) {
+      isLoading.value = false;
+    }
+    
+   
+    async function addTodo(title) {
       if (title === "") {
-        this.showAlert("Todo Title is required");
+        showAlert("Todo Title is required");
         return;
       }
-
       try {
-        this.isPostingTodo = true;
+        isPostingTodo.value = true;
         const res = await axios.post("/api/todos", {
           title,
         });
-        this.isPostingTodo = false;
-        this.todos.push(res.data);
-        this.showAlert("The task was successfully added", "success");
+        isPostingTodo.value = false;
+        todos.value.push(res.data);
+        showAlert("The task was successfully added", "success");
       } catch (e) {
-        this.showAlert("Todos is not add");
+        showAlert("Todos is not add");
       }
-    },
-    showEditTodo(todo) {
-      this.editTodoForm.show = true;
-      this.editTodoForm.todo = { ...todo };
-    },
-    async updateTodo() {
-      const todo = this.todos.find(
-        (todo) => todo.id === this.editTodoForm.todo.id
+    }
+  
+    async function updateTodo() {
+      const todo = todos.value.find(
+        (todo) => todo.id === editTodoForm.todo.id
       );
-      todo.title = this.editTodoForm.todo.title;
+      const {id, title} = editTodoForm.todo;
       await axios.put(
-        `/api/todos/${this.editTodoForm.todo.id}`,
+        `/api/todos/${id}`,
         {
-          title: this.editTodoForm.todo.title,
+          title
         }
       );
-      this.editTodoForm.show = false;
-    },
-    async removeTodo(id) {
+      editTodoForm.show = false;
+    }
+    async function removeTodo(id) {
       await axios.delete(`/api/todos/${id}`);
-      this.todos = this.todos.filter((todo) => todo.id !== id);
-    },
+      todos.value = todos.value.filter((todo) => todo.id !== id);
+    }
+      return {
+        todoTitle,
+        todos, 
+        alert,
+        isLoading,
+        isPostingTodo,
+        editTodoForm, 
+
+        fetchTodos, 
+        showEditTodo, 
+        addTodo, 
+        showEditTodo, 
+        updateTodo,
+        removeTodo
+      }
+      fetchTodos();
   },
-};
+}
 </script>
 
 <style scoped>

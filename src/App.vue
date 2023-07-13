@@ -45,7 +45,7 @@
   </main>
 </template>
 <script setup>
-import Alert from "./components/alert.vue";
+import Alert from "./components/Alert.vue"
 import Navbar from "./components/NavBar.vue";
 import AddTodoForm from "./components/AddTodoForm.vue";
 import Todo from "./components/Todo.vue";

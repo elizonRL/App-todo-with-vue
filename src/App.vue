@@ -44,7 +44,7 @@
     </section>
   </main>
 </template>
-<script>
+<script setup>
 import Alert from "./components/alert.vue";
 import Navbar from "./components/NavBar.vue";
 import AddTodoForm from "./components/AddTodoForm.vue";
@@ -54,18 +54,9 @@ import Btn from "./components/Btn.vue";
 import axios from "axios";
 import Spinner from "./components/Spinner.vue";
 import { reactive, ref } from "vue";
-export default {
-  components: {
-    Alert,
-    Navbar,
-    AddTodoForm,
-    Todo,
-    Modal,
-    Btn,
-    Spinner,
-  },
-  setup(){
-    const todoTitle = ref("");
+
+  
+  const todoTitle = ref("");
     const todos = ref([]);
     const alert = reactive({
         show: false,
@@ -139,24 +130,8 @@ export default {
       await axios.delete(`/api/todos/${id}`);
       todos.value = todos.value.filter((todo) => todo.id !== id);
     }
-      return {
-        todoTitle,
-        todos, 
-        alert,
-        isLoading,
-        isPostingTodo,
-        editTodoForm, 
-
-        fetchTodos, 
-        showEditTodo, 
-        addTodo, 
-        showEditTodo, 
-        updateTodo,
-        removeTodo
-      }
       fetchTodos();
-  },
-}
+  
 </script>
 
 <style scoped>

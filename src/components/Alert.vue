@@ -1,13 +1,14 @@
 <template>
   <div v-if="show" class="alert" :style="{ backgroundColor }">
     <div>{{ message }}</div>
-    <div @click="$emit('close')" class="close-alert">&times;</div>
+    <div @click="close" class="close-alert">&times;</div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
+<script setup>
+import { computed } from 'vue';
+const props = defineProps({
+  
     message: {
       required: true,
       type: String,
@@ -22,9 +23,10 @@ export default {
         return ["danger", "warning", "info", "success", "secondary"].includes(value);
       },
     },
-  },
-  computed: {
-    backgroundColor() {
+  
+});
+const emit = defineEmits(['close']);
+const backgroundColor = computed(()=>{
       const options = {
         danger: "var(--danger-color)",
         info: "var(--info-color)",
@@ -32,18 +34,11 @@ export default {
         success: "var(--accent-color)",
         secondary: "var(--secondary-color)",
       };
-      return options[this.type];
-    },
-  },
-
-  emits: ["close"],
-
-  methods: {
-    closeAlert() {
-      this.$emit("close");
-    },
-  },
-};
+      return options[props.type];
+    });
+    function close(){
+      emit("close");
+    }
 </script>
 
 <style scoped>

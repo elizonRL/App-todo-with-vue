@@ -8,10 +8,10 @@
   </button>
 </template>
 
-<script>
-export default {
-  props: {
-    type: {
+<script setup>
+import {computed} from 'vue';
+const props = defineProps({
+  type: {
       required: false,
       default: "success",
       validator(value) {
@@ -23,24 +23,22 @@ export default {
       default: false,
       type: Boolean,
     },
-  },
-  computed: {
-    backgroundColor() {
+});
+ const emit = defineEmits(['click'])
+const backgroundColor = computed(()=>{
       const options = {
         danger: "var(--danger-color)",
         info: "var(--info-color)",
         warning: "var(--warning-color)",
         success: "var(--accent-color)",
         secondary: "var(--secondary-color)",
-      };
-      return options[this.type];
-    },
-    applyCircleClass() {
-      return this.circle;
-    },
-  },
-  emits: ["click"],
-};
+      }
+      return options[props.type];
+    });
+
+    const applyCircleClass = computed(()=>{
+      return props.circle;
+    })
 </script>
 
 <style scoped>

@@ -45,15 +45,15 @@
   </main>
 </template>
 <script setup>
-import Alert from "./components/Alert.vue"
-import Navbar from "./components/NavBar.vue";
-import AddTodoForm from "./components/AddTodoForm.vue";
-import Todo from "./components/Todo.vue";
-import Modal from "./components/Modal.vue";
-import Btn from "./components/Btn.vue";
-import axios from "axios";
-import Spinner from "./components/Spinner.vue";
-import { reactive, ref } from "vue";
+  import Alert from "./components/Alert.vue"
+  import Navbar from "./components/Navbar.vue";
+  import AddTodoForm from "./components/AddTodoForm.vue";
+  import Todo from "./components/Todo.vue";
+  import Modal from "./components/Modal.vue";
+  import Btn from "./components/Btn.vue";
+  import axios from "axios";
+  import Spinner from "./components/Spinner.vue";
+  import { reactive, ref } from "vue";
 
   
   const todoTitle = ref("");
@@ -72,7 +72,7 @@ import { reactive, ref } from "vue";
           title: "",
         },
       },);
-
+      fetchTodos();
       function showEditTodo(todo) {
       editTodoForm.show = true;
       editTodoForm.todo = { ...todo };
@@ -111,6 +111,7 @@ import { reactive, ref } from "vue";
       } catch (e) {
         showAlert("Todos is not add");
       }
+      title = "";
     }
   
     async function updateTodo() {
@@ -123,14 +124,16 @@ import { reactive, ref } from "vue";
         {
           title
         }
+        
       );
       editTodoForm.show = false;
+      fetchTodos();
     }
     async function removeTodo(id) {
       await axios.delete(`/api/todos/${id}`);
       todos.value = todos.value.filter((todo) => todo.id !== id);
     }
-      fetchTodos();
+      
   
 </script>
 

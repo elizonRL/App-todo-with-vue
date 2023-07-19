@@ -7,6 +7,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useBackgroundColor, backgroungColorProps } from './composable/backgroungColor';
 const props = defineProps({
   
     message: {
@@ -17,25 +18,10 @@ const props = defineProps({
       required: true,
       type: Boolean,
     },
-    type: {
-      default: "danger",
-      validator(value) {
-        return ["danger", "warning", "info", "success", "secondary"].includes(value);
-      },
-    },
-  
+    ...backgroungColorProps
 });
 const emit = defineEmits(['close']);
-const backgroundColor = computed(()=>{
-      const options = {
-        danger: "var(--danger-color)",
-        info: "var(--info-color)",
-        warning: "var(--warning-color)",
-        success: "var(--accent-color)",
-        secondary: "var(--secondary-color)",
-      };
-      return options[props.type];
-    });
+const backgroundColor = useBackgroundColor(props);
     function close(){
       emit("close");
     }

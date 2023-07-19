@@ -15,37 +15,37 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    show: {
+<script setup>
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+
+defineProps({
+  show: {
       default: false,
     },
-  },
-  data() {
-    return {
-      clickListener: (e) => {
-        if (e.target === this.$refs.modal) {
-          this.$emit("close");
+})
+const modal = ref(null);
+
+const emit = defineEmits(["close"]);
+
+const clickListener = (e) => {
+        if (e.target === modal.value) {
+          emit("close");
         }
-      },
-      keydown: (e) => {
+      }
+
+const keydown = (e) => {
         if (e.key === "Escape") {
           this.$emit("close");
         }
-      },
-    };
-  },
-  emits: ["close"],
-  mounted() {
-    window.addEventListener("click", this.clickListener);
-    window.addEventListener("keydown", this.keydown);
-  },
-  beforeUnmount() {
-    window.removeEventListener("click", this.clickListener);
-    window.removeEventListener("keydown", this.keydown);
-  },
-};
+      }
+onMounted(()=>{
+  window.addEventListener("click", clickListener);
+  window.addEventListener("keydown", keydown); 
+});
+onBeforeUnmount(()=>{
+  window.removeEventListener("click", clickListener);
+  window.removeEventListener("keydown", keydown);
+});
 </script>
 
 <style scoped>
